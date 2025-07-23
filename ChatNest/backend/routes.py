@@ -136,7 +136,7 @@ async def generate_ai_response(request: Request, body: dict, user=Depends(get_cu
         'temperature': 0.7,
         'max_tokens': 4000
     }
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=10) as client:
         resp = await client.post(
             'https://api.mistral.ai/v1/chat/completions',
             headers={
@@ -149,7 +149,8 @@ async def generate_ai_response(request: Request, body: dict, user=Depends(get_cu
             raise HTTPException(status_code=resp.status_code, detail='Mistral API error')
         data = resp.json()
         try:
-            return {'response': data['choices'][0]['message']['content']}
+            ai_answer = data['choices'][0]['message']['content']
+            return {'response': ai_answer}
         except Exception:
             raise HTTPException(status_code=500, detail='Unexpected response format from Mistral AI') 
 
@@ -159,7 +160,7 @@ MCP_SERVER_URL = os.getenv("MCP_SERVER_URL", "http://localhost:9000/mcp")
 async def send_to_mcp(request: Request, user=Depends(get_current_user)):
     data = await request.json()
     try:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=10) as client:
             mcp_response = await client.post(MCP_SERVER_URL, json=data)
             mcp_response.raise_for_status()
             return mcp_response.json()
