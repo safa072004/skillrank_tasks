@@ -13,7 +13,7 @@ const Index = () => {
     setIsLoading(true);
     try {
       await login(username, password);
-      setAuthMode("chat");
+        setAuthMode("chat");
     } finally {
       setIsLoading(false);
     }
@@ -24,10 +24,10 @@ const Index = () => {
     try {
       await register(username, password);
       await login(username, password);
-      setAuthMode("chat");
+    setAuthMode("chat");
     } finally {
       setIsLoading(false);
-    }
+  }
   };
 
   if (authMode === "chat") {

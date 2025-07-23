@@ -31,7 +31,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -44,7 +44,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
             raise credentials_exception
     except jwt.PyJWTError:
         raise credentials_exception
-    user = db.users.find_one({"username": username})
+    user = await db.users.find_one({"username": username})
     if not user:
         raise credentials_exception
     return user
@@ -116,7 +116,7 @@ async def get_conversations(user_id: str, user=Depends(get_current_user)):
     cursor = db.conversations.find({"user_ids": user_id})
     async for doc in cursor:
         conversations.append(conversation_helper(doc))
-    return conversations
+    return conversations 
 
 @router.post("/ai/generate")
 async def generate_ai_response(request: Request, body: dict, user=Depends(get_current_user)):
@@ -152,3 +152,16 @@ async def generate_ai_response(request: Request, body: dict, user=Depends(get_cu
             return {'response': data['choices'][0]['message']['content']}
         except Exception:
             raise HTTPException(status_code=500, detail='Unexpected response format from Mistral AI') 
+
+MCP_SERVER_URL = os.getenv("MCP_SERVER_URL", "http://localhost:9000/mcp")
+
+@router.post("/mcp/send")
+async def send_to_mcp(request: Request, user=Depends(get_current_user)):
+    data = await request.json()
+    try:
+        async with httpx.AsyncClient() as client:
+            mcp_response = await client.post(MCP_SERVER_URL, json=data)
+            mcp_response.raise_for_status()
+            return mcp_response.json()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"MCP server error: {str(e)}") 
