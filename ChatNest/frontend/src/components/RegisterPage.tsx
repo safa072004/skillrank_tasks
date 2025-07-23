@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { registerWithEmailAndPassword } from "@/services/authService";
+import { register } from "@/services/authService";
 import { useToast } from "@/hooks/use-toast";
 
 interface RegisterPageProps {
@@ -14,8 +14,7 @@ interface RegisterPageProps {
 }
 
 export const RegisterPage = ({ onRegister, onSwitchToLogin }: RegisterPageProps) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +24,6 @@ export const RegisterPage = ({ onRegister, onSwitchToLogin }: RegisterPageProps)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (password !== confirmPassword) {
       toast({
         title: "Passwords don't match",
@@ -34,7 +32,6 @@ export const RegisterPage = ({ onRegister, onSwitchToLogin }: RegisterPageProps)
       });
       return;
     }
-
     if (password.length < 6) {
       toast({
         title: "Password too short",
@@ -43,11 +40,9 @@ export const RegisterPage = ({ onRegister, onSwitchToLogin }: RegisterPageProps)
       });
       return;
     }
-
     setIsLoading(true);
-    
     try {
-      await registerWithEmailAndPassword(email, password, name);
+      await register(username, password);
       toast({
         title: "Account created successfully!",
         description: "Welcome! You can now start chatting.",
@@ -73,10 +68,9 @@ export const RegisterPage = ({ onRegister, onSwitchToLogin }: RegisterPageProps)
           <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mb-4 shadow-glow">
             <MessageCircle className="h-8 w-8 text-primary-foreground" />
           </div>
-          <h1 className="text-3xl font-bold text-foreground">Join Us</h1>
+          <h1 className="text-3xl font-bold text-foreground">ChatNest</h1>
           <p className="text-muted-foreground mt-2">Create your account to get started</p>
         </div>
-
         {/* Register Form */}
         <Card className="bg-card/50 backdrop-blur-sm border-border shadow-chat animate-slide-up">
           <CardHeader className="space-y-1">
@@ -88,31 +82,17 @@ export const RegisterPage = ({ onRegister, onSwitchToLogin }: RegisterPageProps)
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-foreground">Full Name</Label>
+                <Label htmlFor="username" className="text-foreground">Username</Label>
                 <Input
-                  id="name"
+                  id="username"
                   type="text"
-                  placeholder="Enter your full name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Enter your username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   required
                   className="bg-chat-input-bg border-border text-foreground placeholder:text-muted-foreground focus:ring-chat-primary focus:border-chat-primary transition-smooth"
                 />
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-foreground">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="bg-chat-input-bg border-border text-foreground placeholder:text-muted-foreground focus:ring-chat-primary focus:border-chat-primary transition-smooth"
-                />
-              </div>
-              
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-foreground">Password</Label>
                 <div className="relative">
@@ -141,7 +121,6 @@ export const RegisterPage = ({ onRegister, onSwitchToLogin }: RegisterPageProps)
                   </Button>
                 </div>
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword" className="text-foreground">Confirm Password</Label>
                 <div className="relative">
@@ -169,7 +148,6 @@ export const RegisterPage = ({ onRegister, onSwitchToLogin }: RegisterPageProps)
                   </Button>
                 </div>
               </div>
-
               <Button
                 type="submit"
                 className="w-full bg-gradient-primary hover:shadow-glow transition-smooth"
@@ -178,7 +156,6 @@ export const RegisterPage = ({ onRegister, onSwitchToLogin }: RegisterPageProps)
                 {isLoading ? "Creating Account..." : "Create Account"}
               </Button>
             </form>
-
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">
                 Already have an account?{" "}

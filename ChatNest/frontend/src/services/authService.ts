@@ -1,37 +1,32 @@
 
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signOut, 
-  updateProfile,
-  User 
-} from "firebase/auth";
-import { auth } from "@/lib/firebase";
+const API_BASE = "http://localhost:8000";
 
-export const registerWithEmailAndPassword = async (
-  email: string, 
-  password: string, 
-  name: string
-): Promise<User> => {
-  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  const user = userCredential.user;
-  
-  // Update the user's display name
-  await updateProfile(user, {
-    displayName: name
+export const register = async (username: string, password: string) => {
+  const res = await fetch(`${API_BASE}/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
   });
-  
-  return user;
+  if (!res.ok) throw new Error("Failed to register");
+  return res.json();
 };
 
-export const loginWithEmailAndPassword = async (
-  email: string, 
-  password: string
-): Promise<User> => {
-  const userCredential = await signInWithEmailAndPassword(auth, email, password);
-  return userCredential.user;
+export const login = async (username: string, password: string) => {
+  const res = await fetch(`${API_BASE}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
+  });
+  if (!res.ok) throw new Error("Failed to login");
+  const data = await res.json();
+  localStorage.setItem("token", data.access_token);
+  return data;
 };
 
-export const logout = async (): Promise<void> => {
-  await signOut(auth);
+export const logout = () => {
+  localStorage.removeItem("token");
+};
+
+export const getToken = () => {
+  return localStorage.getItem("token");
 };

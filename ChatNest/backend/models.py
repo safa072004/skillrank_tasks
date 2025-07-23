@@ -14,3 +14,8 @@ class Conversation(BaseModel):
     user_ids: List[str]
     messages: Optional[List[Message]] = []
     created_at: datetime 
+
+class User(BaseModel):
+    id: Optional[str] = Field(None, alias="_id")
+    username: str
+    hashed_password: str 

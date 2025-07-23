@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { loginWithEmailAndPassword } from "@/services/authService";
+import { login } from "@/services/authService";
 import { useToast } from "@/hooks/use-toast";
 
 interface LoginPageProps {
@@ -14,7 +14,7 @@ interface LoginPageProps {
 }
 
 export const LoginPage = ({ onLogin, onSwitchToRegister }: LoginPageProps) => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,9 +23,8 @@ export const LoginPage = ({ onLogin, onSwitchToRegister }: LoginPageProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
     try {
-      await loginWithEmailAndPassword(email, password);
+      await login(username, password);
       toast({
         title: "Login successful!",
         description: "Welcome back!",
@@ -51,7 +50,7 @@ export const LoginPage = ({ onLogin, onSwitchToRegister }: LoginPageProps) => {
           <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mb-4 shadow-glow">
             <MessageCircle className="h-8 w-8 text-primary-foreground" />
           </div>
-          <h1 className="text-3xl font-bold text-foreground">Welcome Back</h1>
+          <h1 className="text-3xl font-bold text-foreground">ChatNest</h1>
           <p className="text-muted-foreground mt-2">Sign in to continue your conversations</p>
         </div>
 
@@ -66,18 +65,17 @@ export const LoginPage = ({ onLogin, onSwitchToRegister }: LoginPageProps) => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-foreground">Email</Label>
+                <Label htmlFor="username" className="text-foreground">Username</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="username"
+                  type="text"
+                  placeholder="Enter your username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   required
                   className="bg-chat-input-bg border-border text-foreground placeholder:text-muted-foreground focus:ring-chat-primary focus:border-chat-primary transition-smooth"
                 />
               </div>
-              
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-foreground">Password</Label>
                 <div className="relative">
@@ -105,7 +103,6 @@ export const LoginPage = ({ onLogin, onSwitchToRegister }: LoginPageProps) => {
                   </Button>
                 </div>
               </div>
-
               <Button
                 type="submit"
                 className="w-full bg-gradient-primary hover:shadow-glow transition-smooth"
@@ -114,7 +111,6 @@ export const LoginPage = ({ onLogin, onSwitchToRegister }: LoginPageProps) => {
                 {isLoading ? "Signing In..." : "Sign In"}
               </Button>
             </form>
-
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">
                 Don't have an account?{" "}

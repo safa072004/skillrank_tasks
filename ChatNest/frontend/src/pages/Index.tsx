@@ -1,58 +1,34 @@
 
-import { useState, useEffect } from "react";
-import { onAuthStateChanged } from "firebase/auth";
+import { useState } from "react";
 import { ChatWindow } from "@/components/ChatWindow";
 import { LoginPage } from "@/components/LoginPage";
 import { RegisterPage } from "@/components/RegisterPage";
-import { auth } from "@/lib/firebase";
-
-type AuthMode = "login" | "register" | "chat";
+import { login, register } from "@/services/authService";
 
 const Index = () => {
-  const [authMode, setAuthMode] = useState<AuthMode>("login");
-  const [isLoading, setIsLoading] = useState(true);
+  const [authMode, setAuthMode] = useState<"login" | "register" | "chat">("login");
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("User is signed in:", user.email);
-        setAuthMode("chat");
-      } else {
-        console.log("User is signed out");
-        setAuthMode("login");
-      }
+  const handleLogin = async (username: string, password: string) => {
+    setIsLoading(true);
+    try {
+      await login(username, password);
+      setAuthMode("chat");
+    } finally {
       setIsLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const handleLogin = () => {
-    setAuthMode("chat");
+    }
   };
 
-  const handleRegister = () => {
-    setAuthMode("chat");
+  const handleRegister = async (username: string, password: string) => {
+    setIsLoading(true);
+    try {
+      await register(username, password);
+      await login(username, password);
+      setAuthMode("chat");
+    } finally {
+      setIsLoading(false);
+    }
   };
-
-  const handleSwitchToRegister = () => {
-    setAuthMode("register");
-  };
-
-  const handleSwitchToLogin = () => {
-    setAuthMode("login");
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-background">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-chat-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (authMode === "chat") {
     return <ChatWindow />;
@@ -61,16 +37,16 @@ const Index = () => {
   if (authMode === "register") {
     return (
       <RegisterPage
-        onRegister={handleRegister}
-        onSwitchToLogin={handleSwitchToLogin}
+        onRegister={() => setAuthMode("chat")}
+        onSwitchToLogin={() => setAuthMode("login")}
       />
     );
   }
 
   return (
     <LoginPage
-      onLogin={handleLogin}
-      onSwitchToRegister={handleSwitchToRegister}
+      onLogin={() => setAuthMode("chat")}
+      onSwitchToRegister={() => setAuthMode("register")}
     />
   );
 };
