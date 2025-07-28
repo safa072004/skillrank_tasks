@@ -1,0 +1,168 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Modern Chat App Design System - Clean white/black theme */
+
+@layer base {
+  :root {
+    /* Light Mode - White based colors */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+
+    --primary: 142 76% 36%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 9%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 89%;
+    --input: 0 0% 89%;
+    --ring: 142 76% 36%;
+
+    /* Chat-specific colors for light mode */
+    --chat-primary: 142 76% 36%;
+    --chat-primary-light: 142 76% 46%;
+    --chat-secondary: 0 0% 96%;
+    --chat-user-bg: 142 76% 36%;
+    --chat-user-text: 0 0% 98%;
+    --chat-assistant-bg: 0 0% 98%;
+    --chat-assistant-text: 0 0% 9%;
+    --chat-input-bg: 0 0% 100%;
+    
+    /* Gradients for light mode */
+    --gradient-primary: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 86% 28%));
+    --gradient-background: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 98%));
+    --gradient-chat: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 98%));
+    
+    /* Shadows */
+    --shadow-chat: 0 4px 20px -2px hsl(0 0% 0% / 0.1);
+    --shadow-message: 0 2px 10px -2px hsl(0 0% 0% / 0.05);
+    --shadow-glow: 0 0 20px hsl(142 76% 36% / 0.15);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 9%;
+    --sidebar-primary: 0 0% 9%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 9%;
+    --sidebar-border: 0 0% 89%;
+    --sidebar-ring: 142 76% 36%;
+  }
+
+  .dark {
+    /* Dark Mode - Black based colors */
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 142 76% 36%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 142 76% 36%;
+
+    /* Chat-specific colors for dark mode */
+    --chat-primary: 142 76% 36%;
+    --chat-primary-light: 142 76% 46%;
+    --chat-secondary: 0 0% 14.9%;
+    --chat-user-bg: 142 76% 36%;
+    --chat-user-text: 0 0% 98%;
+    --chat-assistant-bg: 0 0% 14.9%;
+    --chat-assistant-text: 0 0% 98%;
+    --chat-input-bg: 0 0% 3.9%;
+    
+    /* Gradients for dark mode */
+    --gradient-primary: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 86% 28%));
+    --gradient-background: linear-gradient(135deg, hsl(0 0% 3.9%), hsl(0 0% 6%));
+    --gradient-chat: linear-gradient(180deg, hsl(0 0% 3.9%), hsl(0 0% 7%));
+    
+    --sidebar-background: 0 0% 3.9%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 0 0% 9%;
+    --sidebar-accent: 0 0% 14.9%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 14.9%;
+    --sidebar-ring: 142 76% 36%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+    font-variation-settings: 'opsz' 32;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+}
+
+/* Custom scrollbar for both themes */
+@layer utilities {
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted));
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.8);
+  }
+}

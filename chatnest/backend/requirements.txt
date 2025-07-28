@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+motor
+python-dotenv 
+firebase-admin 
+pyjwt
+httpx
+requests 
